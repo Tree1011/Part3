@@ -25,14 +25,17 @@ let persons = [
     }
 ]
 
+// Getting all persons
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
 
+// Getting persons info
 app.get('/info', (request, response)=>{
     response.send(`Phone book has info for ${persons.length} people. <br><br>${Date()}`)
 })
 
+// Getting a person
 app.get('/api/persons/:id',(request, response)=>{
     const id = request.params.id
     const person= persons.find((person) => person.id === id)
@@ -40,6 +43,13 @@ app.get('/api/persons/:id',(request, response)=>{
         response.status(404).send(`Person with id ${id} is NOT FOUND`)
     }
     response.send(person)
+})
+
+// Delete a person
+app.delete('/api/persons/:id',(request, response)=>{
+    const id = request.params.id
+    let deletedPerson = persons.filter((person)=>person.id !== id)
+    response.send(deletedPerson)
 })
 
 const PORT = 3001
