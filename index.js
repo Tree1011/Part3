@@ -2,6 +2,8 @@ const http = require('http')
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     { 
       "id": "1",
@@ -25,6 +27,13 @@ let persons = [
     }
 ]
 
+const generateId = () => {
+  const maxId = persons.length > 0 
+    ? Math.max(...persons.map(p => Number(p.id))) 
+    : 0
+  return maxId + 1
+}
+
 // Getting all persons
 app.get('/api/persons', (request, response) => {
   response.json(persons)
@@ -43,6 +52,14 @@ app.get('/api/persons/:id',(request, response)=>{
         response.status(404).send(`Person with id ${id} is NOT FOUND`)
     }
     response.send(person)
+})
+
+app.post('/api/persons', (request, response) => {
+   const body = request.body
+   body.id = generateId()
+   console.log('===========body==========', body)
+   persons = persons.concat(body)
+   response.status(201).send(persons)
 })
 
 // Delete a person
